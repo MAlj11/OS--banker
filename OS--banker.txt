@@ -1,0 +1,262 @@
+﻿#include<stdio.h>
+
+int Available[10];//可利用的资源量
+int Max[10][10];            //最大资源量
+int Allocation[10][10];    //已经分配的资源量
+int Allocation1[10];
+int Need[10][10];        //需求的资源量
+int Need1[10];
+int SafeXulie[10];       //存放安全序列
+int al;                  //几类可用资源
+int ma;                  //几个进程
+int Work[10];
+int Finish[10];
+int zanshi1[10][10];           //暂时存放需求与可用资源量想减的数
+int ChangeneedNo;        //要申请资源的进程
+	 int flag2=0;
+	int flag3=0;
+	int flag1 = 0;
+
+void Init(){         //初始化
+
+printf("请输入资源种类数量：");
+scanf("%d",&al);
+
+for(int i=0; i<=al-1;i++){
+
+printf("请输入%d类可用资源数：",i+1);
+scanf("%d",&Available[i]);
+}
+
+printf("请输入进程数：");
+scanf("%d",&ma);
+
+for(int o=0 ;o<=ma-1;o++){
+	for(int u=0; u<=al-1 ; u++){
+	printf("请输入第p[%d]进程的第%d类资源最大资源数:",o,u+1);
+	scanf("%d",&Max[o][u]);
+	
+	}
+}
+for(int x=0;x<=ma-1;x++){
+    for(int y=0; y<=al-1;y++){
+	printf("请输入第p[%d]进程的第%d类资源已分配资源数:",x,y+1);
+	scanf("%d",&Allocation[x][y]);
+	Need[x][y] = Max[x][y] - Allocation[x][y];
+	}
+}
+/*结果输出
+for(int a=0;a<=ma-1;a++){
+	printf("p[%d]  ",a);
+	for(int b=0;b<=av-1;b++){
+	printf("%d  ",Need[a][b]);
+	}
+	printf("\n");
+}
+*/
+}
+
+
+
+
+void GetSafexulie(){
+	
+	  int flag2=0;
+     int flag=0;
+     int flag3=0;
+	 
+	  for(int v=0;v<=al-1;v++){
+      Work[v] = Available[v];
+	   }	
+	   
+	  
+   for(int xuhao = 0; xuhao<=ma-1;xuhao++){  
+	   for(int w=0;w<=ma-1;w++){
+	  Finish[w] = 0; 
+    }
+      for(int wa=0;wa<=ma-1;wa++){    
+	  for(int ea=0;ea<=al-1;ea++){
+       zanshi1[wa][ea] = Work[ea] - Need[wa][ea];
+	  
+	  }
+	 
+	}
+	 
+	for(int r=0; r<=ma-1;r++){
+		for(int t=0;t<=al-1;t++){
+			if(zanshi1[r][t]<0){
+			Finish[r]= 1;
+			break;
+			}
+			
+		}
+	}
+    
+	
+	for(int aa=0;aa<=ma-1;aa++){
+	
+		if(Finish[aa] == 0){
+	
+	    for(int aaa=0;aaa<=al-1;aaa++){
+        
+		Work[aaa] += Allocation[aa][aaa];
+					
+			}
+	
+			SafeXulie[xuhao] = aa;
+			for(int faa=0;faa<=al-1;faa++){
+		    Need[aa][faa] = 100;			
+			}
+			for(int qqq=0;qqq<=ma-1;qqq++){
+				for(int eee=0;eee<=al-1;eee++){
+				 zanshi1[qqq][eee]=0;
+				}
+			}
+			break;
+		}
+	
+	else{
+         SafeXulie[xuhao] = 100;
+      }
+	}
+	
+   }  	
+	
+	
+for(int jiance =0;jiance<=ma-1;jiance++){
+  if(SafeXulie[jiance] == 100){
+    flag2 = 1;
+	flag3 = 1;
+  }
+}
+if(flag2 == 1){
+	printf("\n");
+  printf("无安全序列");
+  for(int iii=0;iii<=al-1;iii++){
+     Available[iii] = Available[iii] + Need1[iii];
+	 Allocation[ChangeneedNo][iii] = Allocation[ChangeneedNo][iii] - Need1[iii];
+	 Need[ChangeneedNo][iii] = Need[ChangeneedNo][iii] + Need1[iii];
+  
+  }
+
+}
+
+if(flag3 == 0){
+	printf("安全序列为：");
+	int anquan;
+
+for(anquan = 0;anquan<=ma-1;anquan++){
+   printf("p[%d].  ",SafeXulie[anquan]);
+}
+for(int jj=0;jj<=al-1;jj++){
+Need[ChangeneedNo][jj] = Max[ChangeneedNo][jj] - Allocation[ChangeneedNo][jj];
+}
+int jishu=0;
+for(int kk=0;kk<=al-1;kk++){
+	if(Need[ChangeneedNo][kk] == 0){
+	 jishu++;
+	}
+}
+if(jishu==al){
+printf("\n");
+printf("p[%d]进程已分配完毕，资源已回收",ChangeneedNo);
+for(int kkk =0;kkk<=al-1;kkk++){
+Available[kkk] = Available[kkk] + Allocation[ChangeneedNo][kkk];
+}
+
+}
+printf("\n");
+printf("%d类拥有的资源: ",al);
+for(int all=0;all<=al-1;all++){
+  printf("%d.  ",Available[all]);
+}
+}
+for(int dd=0;dd<=ma-1;dd++){
+	for(int ddd=0;ddd<=al-1;ddd++){
+	Need[dd][ddd] = Max[dd][ddd] - Allocation[dd][ddd];
+	}
+}
+
+}
+
+
+
+void ChangeNeed(){
+	
+	int flag1 = 0;
+	
+printf("请输入要申请资源的进程：");
+scanf("%d",&ChangeneedNo);
+for(int ziyuan = 0;ziyuan<=al-1;ziyuan++){
+   printf("请输入请求的第%d类资源数：",ziyuan+1);
+   scanf("%d",&Need1[ziyuan]);
+}
+
+
+
+for(int bijiao = 0;bijiao<=al-1;bijiao++){
+
+	if(Need1[bijiao]>Available[bijiao]  ){
+		
+		flag1=1;
+		
+	    continue;
+	
+	}
+	  else if(Need1[bijiao]>Need[ChangeneedNo][bijiao] ){
+	  flag1 = 1;
+	  continue;
+	}
+}
+	if(flag1 == 1){
+		printf("需求过大");
+	}
+	
+  else if(flag1 == 0){
+	for(int ziyuan2=0;ziyuan2<=al-1;ziyuan2++){
+	Need[ChangeneedNo][ziyuan2] = Need[ChangeneedNo][ziyuan2] - Need1[ziyuan2];
+	Available[ziyuan2] = Available[ziyuan2] - Need1[ziyuan2];
+	Allocation[ChangeneedNo][ziyuan2] = Allocation[ChangeneedNo][ziyuan2] + Need1[ziyuan2];
+}
+  
+    GetSafexulie();
+ 
+}
+}
+
+int main(){
+      while(1){
+		   
+	
+printf("                                               \n");
+printf("                                               \n");
+printf("                    银行家算法                 \n");
+printf("-----------------------------------------------\n");
+printf("                                               \n");
+printf("                                               \n");
+printf("                 0.输入有关初始值              \n");
+printf("                 1.检测安全性                  \n");
+printf("                 2.进程申请资源                \n");
+printf("                                               \n");
+printf("请输入：");
+int gongneng;
+scanf("%d",&gongneng);
+switch(gongneng){
+
+case 0:
+      Init();
+	  break;
+case 1:
+	  GetSafexulie();
+	  break;
+case 2:
+	ChangeNeed();
+	break;
+
+}
+	}
+	
+	return 0;
+}
+
+
